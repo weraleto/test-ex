@@ -7,6 +7,12 @@
           @activate="activateCat($event, item.id)"
         ></el-tag>
       </div>
+      <div class="input__wrapper">
+        <input type="search" name="searchBooks" placeholder="Поиск по книгам"
+          v-model="searchReq"
+          @input="filterWords"
+        >
+      </div>
       <div class="cards__wrapper">
         <el-card v-for="(book, index) in books" :key="index"
           :data="book"
@@ -34,7 +40,9 @@ export default {
       books: [],
       activeCats: [],
       currentPage: 1,
-      hasNext: true
+      hasNext: true,
+      filtratedBooks: [],
+      searchReq: ''
     }
   },
   mounted(){
@@ -78,6 +86,19 @@ export default {
       },
       loadNextPage(){
         this.currentPage++;
+      },
+      filterWords(){
+        
+        let a = this.books.filter(it=>{
+          
+          for (let prop in it){
+            // console.log(typeof it[prop])
+            if (typeof it[prop] == 'string' && it[prop].indexOf(this.searchReq)){
+              return it
+            }
+          }
+        })
+        console.log(a)
       }
   },
   computed: {

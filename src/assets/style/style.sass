@@ -11,12 +11,21 @@ html, body
 #app 
     margin: 50px 0
 
+input 
+    padding: 5px 15px
+    border: 2px solid $accent
+    border-radius: $borderRadius
+    width: 100%
+    font: 16px 'Helvetica', sans-serif
+
+.input__wrapper
+    margin: 1.5rem 0 3rem
+
 
 .tags__wrapper
     display: flex
     flex-wrap: wrap
-    justify-content: space-around
-    margin-bottom: 3.125rem
+    justify-content: space-between
 
 .tag 
     width: min-content
@@ -29,7 +38,7 @@ html, body
     color: $accent
     font-weight: bold
     border: 2px solid $accent
-    border-radius: 15px
+    border-radius: $borderRadius
     transition: color, background-color .3s ease 
 
     &__name 
@@ -73,7 +82,7 @@ html, body
 
 .book-card
     border: 2px dashed rgba($info,0.5)
-    border-radius: 15px
+    border-radius: $borderRadius
     padding: 1rem
     // flex: 1 0 25%
     margin: 0 .5% 1rem
