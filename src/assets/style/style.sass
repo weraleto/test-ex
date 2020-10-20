@@ -1,0 +1,91 @@
+@import 'reset', 'vars'
+
+html, body 
+    font: 16px 'Helvetica', sans-serif
+    
+
+.container 
+    max-width: 1140px
+    margin: 0 auto
+
+#app 
+    margin: 50px 0
+
+
+.tags__wrapper
+    display: flex
+    flex-wrap: wrap
+    justify-content: space-around
+    margin-bottom: 3.125rem
+
+.tag 
+    width: min-content
+    position: relative
+    padding: 5px 15px
+    font-size: 0.9rem
+    display: flex
+    align-items: center
+
+    color: $accent
+    font-weight: bold
+    border: 2px solid $accent
+    border-radius: 15px
+    transition: color, background-color .3s ease 
+
+    &__name 
+        text-align: center
+    &__reset
+        flex: 1 0 auto
+        width: 10px
+        height: 14px
+        color: $accent
+        margin-left: 20px
+        position: relative
+        opacity: 0
+        transition: opacity 0.3s ease
+
+        &::after
+            content: ''
+            position: absolute
+            top: 0
+            left: 0
+            transform: translate(-25%, -2.5px)
+            background-color: $white
+            width: 20px
+            height: 20px
+            border-radius: 50%
+
+    img 
+        z-index: 5
+
+            
+    &:hover, &.active
+        background-color: $accent
+        color: $white
+        
+        .tag__reset, .tag__reset::after
+            opacity: 1
+            
+.cards__wrapper 
+    @extend .tags__wrapper
+    justify-content: space-between
+
+
+.book-card
+    border: 2px dashed rgba($info,0.5)
+    border-radius: 15px
+    padding: 1rem
+    // flex: 1 0 25%
+    margin: 0 .5% 1rem
+    // max-width: 30%
+    color: $info
+    display: flex
+
+    &__img 
+        flex: 0 0 150px
+        margin-right: 1rem
+    &__element
+        margin: 5px 0
+    &__label
+        font-weight: bold
+        color: $black
