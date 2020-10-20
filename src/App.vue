@@ -4,15 +4,15 @@
       <div class="tags__wrapper">
         <el-tag v-for="(item, index) in categories" :key="index"
           :name="item.name"
-          :id="item.id"
+          @activate="activateCat($event, item.id)"
         ></el-tag>
       </div>
       <div class="cards__wrapper">
-        <el-card v-for="(book, index) in books.list" :key="index"
+        <el-card v-for="(book, index) in books" :key="index"
           :data="book"
         ></el-card>
       </div>
-      <button class="btn btn-more">
+      <button v-show="hasNext" @click="loadNextPage" class="btn btn-more">
         Загрузить еще 
       </button>
     </div>
@@ -33,12 +33,15 @@ export default {
       categories: [],
       books: [],
       activeCats: [],
-      currentPage: 1
+      currentPage: 1,
+      hasNext: true
     }
   },
   mounted(){
     this.getCategories()
+      .then(()=>this.activeCats = this.allCategories)
       .then(()=>this.getBooks(this.allCategories, this.currentPage))
+    
     
   },
   methods: {
@@ -54,13 +57,37 @@ export default {
             page: page
           })
               .then(res=>{
-                  this.books = res.data.data
+                  res.data.data.list.forEach(it=>{
+                    this.books.push(it)
+                  })
+                  this.hasNext = res.data.data.next
               })
+      },
+      async activateCat(payload, id){
+          this.books = []
+
+        if (payload) {
+
+          await this.activeCats.push(id) 
+        } else {
+
+          await this.activeCats.splice(this.activeCats.indexOf(id),1)
+        }
+           this.getBooks(this.activeCats, this.currentPage)
+        
+      },
+      loadNextPage(){
+        this.currentPage++;
       }
   },
   computed: {
     allCategories(){
       return this.categories.map(it=>it.id)
+    }
+  },
+  watch: {
+    currentPage(){
+      this.getBooks(this.activeCats, this.currentPage)
     }
   }
 }
