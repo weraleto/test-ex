@@ -4,11 +4,12 @@
       <div class="tags__wrapper">
         <el-tag v-for="(item, index) in categories" :key="index"
           :name="item.name"
+          :isActive="activeCats.indexOf(item.id)!=-1"
           @activate="activateCat($event, item.id)"
         ></el-tag>
       </div>
       <div class="input__wrapper">
-        <input type="search" name="searchBooks" placeholder="Поиск по книгам"
+        <input ref="inputField" type="search" name="searchBooks" placeholder="Поиск по книгам"
           v-model="searchReq"
           @input="onFilter"
           @keyup.delete="resetBooks"
@@ -52,9 +53,26 @@ export default {
     }
   },
   mounted(){
-    this.getCategories()
-      .then(()=>this.activeCats = this.allCategories)
-      .then(()=>this.getBooks(this.allCategories, this.currentPage))
+    const query = this.$route.query
+      this.getCategories()
+        .then(()=>{
+          
+          if(Object.keys(query).length>0){
+            this.activeCats = query.cats.split(',').map(it=>+it)
+            
+            this.currentPage = query.search ? query.page : 1;
+          }else{
+            this.activeCats = this.allCategories
+          }
+        })
+        .then(()=>this.getBooks(this.activeCats, this.currentPage))
+        .then(()=>{
+          this.searchReq = query.search
+        })
+        .then(
+          ()=>this.onFilter()
+        )
+
     
     
   },
@@ -66,16 +84,24 @@ export default {
               })
       },
       async getBooks(cats,page){
-          await this.$http.post('/book/list',{
-            categories: cats,
-            page: page
-          })
-              .then(res=>{
-                  res.data.data.list.forEach(it=>{
-                    this.books.push(it)
-                  })
-                  this.hasNext = res.data.data.next
-              })
+          if(cats.length>0){
+            await this.$http.post('/book/list',{
+              categories: cats,
+              page: page
+            })
+                .then(res=>{
+                    res.data.data.list.forEach(it=>{
+                      this.books.push(it)
+                    })
+                    this.hasNext = res.data.data.next
+                })
+                .then(()=>{
+                  this.pushState(page, cats)
+                })
+          }else{
+            this.books=[]
+          }
+          
       },
       async activateCat(payload, id){
           this.books = []
@@ -101,9 +127,20 @@ export default {
         }
       },
       onFilter(){
-        if (this.filterLen&&this.searchReq !=''&&this.hasNext) {this.currentPage++}
+        this.pushState(1, this.activeCats)
+        if (this.filterLen&&this.searchReq !=''&&this.hasNext) {
+          this.currentPage++
+          
+        }
         
       },
+      pushState(page, cats){
+        this.$router.replace({query: {
+          page: page,
+          cats: cats.join(','),
+          search: this.searchReq
+        }}).catch(err => {})
+      }
       
   },
   computed: {
@@ -111,7 +148,7 @@ export default {
       return this.categories.map(it=>it.id)
     },
     filterWords(){
-        if(this.searchReq != '')
+        if(this.searchReq&&this.searchReq.length > 0)
         {
           return this.books.filter(it=>{
           
@@ -127,7 +164,6 @@ export default {
         }
     },
     filterLen(){
-      console.log(this.filterWords.length)
       return this.filterWords.length <= 9
     }
   },

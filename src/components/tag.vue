@@ -1,5 +1,5 @@
 <template>
-  <a href="#" class="tag" :class="{'active':isActive}" @click.prevent="activateBtn" :id="id">
+  <a href="#" class="tag" :class="{'active':isActive}" @click.prevent="activateBtn">
       <span class="tag__name">
           {{name}}
       </span>
@@ -17,20 +17,20 @@ export default {
             type: String,
             default: 'Тэг'
         },
-        id: {
-            type: Number,
-            default: 0
+        isActive: {
+            type: Boolean,
+            default: true
         }
     },
     data(){
         return {
-            isActive: true
+            // isActive: true
         }
     },
     methods: {
         activateBtn(){
-            this.isActive = !this.isActive
-            this.$emit('activate', this.isActive)
+            const payload = !this.isActive
+            this.$emit('activate', payload)
         }
     }
 }
