@@ -10,11 +10,10 @@
       <div class="input__wrapper">
         <input type="search" name="searchBooks" placeholder="Поиск по книгам"
           v-model="searchReq"
-          @input="filterWords"
         >
       </div>
       <div class="cards__wrapper">
-        <el-card v-for="(book, index) in books" :key="index"
+        <el-card v-for="(book, index) in filterWords" :key="index"
           :data="book"
         ></el-card>
       </div>
@@ -86,25 +85,29 @@ export default {
       },
       loadNextPage(){
         this.currentPage++;
-      },
-      filterWords(){
-        
-        let a = this.books.filter(it=>{
-          
-          for (let prop in it){
-            // console.log(typeof it[prop])
-            if (typeof it[prop] == 'string' && it[prop].indexOf(this.searchReq)){
-              return it
-            }
-          }
-        })
-        console.log(a)
       }
+      
   },
   computed: {
     allCategories(){
       return this.categories.map(it=>it.id)
-    }
+    },
+    filterWords(){
+        if(this.searchReq != '')
+        {
+          return this.books.filter(it=>{
+          
+            let isEqual = Object.values(it).some(item => item.toString().toLowerCase().indexOf(this.searchReq.toLowerCase()) !== -1);
+            
+            if(isEqual) return it;
+            return;
+            
+            
+          })
+        }else {
+          return this.books
+        }
+      }
   },
   watch: {
     currentPage(){
