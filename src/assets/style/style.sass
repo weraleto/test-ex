@@ -1,7 +1,13 @@
 @import 'reset', 'vars'
 
+@mixin defaultInputStyles()
+    padding: 5px 15px
+    border: 2px solid $accent
+    border-radius: $borderRadius
+    font: $font
+
 html, body 
-    font: 16px 'Helvetica', sans-serif
+    font: $font
     
 
 .container 
@@ -13,14 +19,24 @@ html, body
     margin: 50px 0
 
 input 
-    padding: 5px 15px
-    border: 2px solid $accent
-    border-radius: $borderRadius
+    @include defaultInputStyles
     width: 100%
-    font: 16px 'Helvetica', sans-serif
     &:focus
         outline: none
         border-color: $warning
+
+.btn
+    @include defaultInputStyles
+    color: $accent
+    cursor: pointer
+    transition: $defaultTransition
+    &:hover
+        background-color: darken($accent, 10) 
+        border-color: darken($accent, 10) 
+        color: $white
+        
+    &__wrapper 
+        text-align: center
 
 .input__wrapper
     margin: 1.5rem 0 3rem
@@ -45,7 +61,7 @@ input
     font-weight: bold
     border: 2px solid $accent
     border-radius: $borderRadius
-    transition: color, background-color .3s ease 
+    transition: $defaultTransition
 
     &__name 
         text-align: center

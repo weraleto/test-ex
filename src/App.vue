@@ -25,9 +25,11 @@
           По вашему запросу ничего не найдено
         </div>
       </div>
-      <button v-if="hasNext" @click="loadNextPage" class="btn btn-more">
-        Загрузить еще 
-      </button>
+      <div class="btn__wrapper">
+        <button v-if="hasNext" @click="loadNextPage" class="btn">
+          Загрузить еще 
+        </button>
+      </div>
     </div>
   </div>
 </template>
