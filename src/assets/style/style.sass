@@ -18,6 +18,9 @@ input
     border-radius: $borderRadius
     width: 100%
     font: 16px 'Helvetica', sans-serif
+    &:focus
+        outline: none
+        border-color: $warning
 
 .input__wrapper
     margin: 1.5rem 0 3rem
@@ -77,6 +80,10 @@ input
         
         .tag__reset, .tag__reset::after
             opacity: 1
+
+    &:hover 
+        background-color: darken($accent, 10) 
+        border-color: darken($accent, 10) 
             
 .cards__wrapper 
     @extend .tags__wrapper

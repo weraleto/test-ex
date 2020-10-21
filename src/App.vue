@@ -10,14 +10,21 @@
       <div class="input__wrapper">
         <input type="search" name="searchBooks" placeholder="Поиск по книгам"
           v-model="searchReq"
+          @input="onFilter"
+          @keyup.delete="resetBooks"
         >
       </div>
       <div class="cards__wrapper">
-        <el-card v-for="(book, index) in filterWords" :key="index"
-          :data="book"
-        ></el-card>
+        <template v-show="filterWords.length > 0">
+          <el-card v-for="(book, index) in filterWords" :key="index"
+            :data="book"
+          ></el-card>
+        </template>
+        <div v-show="filterWords.length == 0" class="no-results">
+          По вашему запросу ничего не найдено
+        </div>
       </div>
-      <button v-show="hasNext" @click="loadNextPage" class="btn btn-more">
+      <button v-if="hasNext" @click="loadNextPage" class="btn btn-more">
         Загрузить еще 
       </button>
     </div>
@@ -27,6 +34,7 @@
 <script>
 import elTag from './components/tag'
 import elCard from './components/card'
+
 
 export default {
   name: 'app',
@@ -40,7 +48,6 @@ export default {
       activeCats: [],
       currentPage: 1,
       hasNext: true,
-      filtratedBooks: [],
       searchReq: ''
     }
   },
@@ -85,7 +92,18 @@ export default {
       },
       loadNextPage(){
         this.currentPage++;
-      }
+      },
+      resetBooks(){
+        this.books = []
+        this.currentPage = 1; 
+        if(this.searchReq == ''){
+          this.getBooks(this.activeCats, this.currentPage)
+        }
+      },
+      onFilter(){
+        if (this.filterLen&&this.searchReq !=''&&this.hasNext) {this.currentPage++}
+        
+      },
       
   },
   computed: {
@@ -107,12 +125,20 @@ export default {
         }else {
           return this.books
         }
-      }
+    },
+    filterLen(){
+      console.log(this.filterWords.length)
+      return this.filterWords.length <= 9
+    }
   },
   watch: {
     currentPage(){
       this.getBooks(this.activeCats, this.currentPage)
-    }
-  }
+        .then(()=>{
+          this.onFilter()
+        })
+    },
+    
+  },
 }
 </script>
